@@ -36,7 +36,7 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 	self.set_cmdPos = function(pos, lock)	-- FLOAT, BOOL
 		self.lock = lock or false
 		if lock == false then
-			self.cmdPos = pos
+			self.cmd_Pos = pos
 		end
 	end
 
