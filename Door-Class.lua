@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------
---	Project: 	Useful Lua-Classes for GIZMO X-Plane
+--	Project: 	Useful Lua-Classes for X-Plane GIZMO
 --	Developer:	Daniel Mandlez 
 --	Date:		2014
 --	FileBlock:	Class Door
@@ -18,13 +18,13 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 
 	local self = {}
 	
-	self.DR_Door = DateRef					-- Pointer to DataRef
+	self.DR_Door = DataRef					-- Pointer to DataRef
 	
 	self.lock = false						-- Interlock for set new position
 	self.cmd_pos = initPos or 0.0			-- Initial Position Command
 	self.act_pos = initPos or 0.0			-- Initial Position Actual
 	
-	dref.setFloat(DataRef, initPos)			-- Set DataRef to Initial Position
+	dref.setFloat(DR_Door, initPos)			-- Set DataRef to Initial Position
 	
 	self.TravelTime = travelTime			-- Time in seconds for Movement from 0.0 to 1.0
 	
@@ -59,7 +59,7 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 				else
 					self.act_pos = temp_pos
 				end
-				dref.setFloat(DataRef, initPos)		-- Set Door Dataref to new Position
+				dref.setFloat(DR_Door, self.act_pos)-- Set Door Dataref to new Position
 				
 			elseif self.cmd_pos < self.act_pos then	-- move close
 				temp_pos = self.act_pos - 1/(FPS * self.TravelTime)
@@ -70,7 +70,7 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 				else
 					self.act_pos = temp_pos
 				end
-				dref.setFloat(DataRef, initPos)		-- Set Door Dataref to new Position
+				dref.setFloat(DR_Door, self.act_pos)-- Set Door Dataref to new Position
 			end
 		end
 	end
@@ -119,11 +119,10 @@ FwdLeft_Door = Door.new(DR_Door_FwdL, 5.0, 1.0)	-- Create Forward Left Door: 5.0
 APU_Door = Door.new(DR_Door_APU, 10.0, 0.0)		-- Create APU Door:	10.0 seconds travel time, Initial Position 0.0 (close)
 
 -- OPTIONAL: you can create the DataRef direct on object create 
---[[
 	FwdLeft_Door = Door.new(dref.newFloat("yourairplane/Doors/FwdLeft"), 5.0, 1.0)
 	APU_Door = Door.new(dref.newFloat("yourairplane/Doors/APU"), 10.0, 0.0)
 	-- The pointer to the DataRef is now NOT Global and is only available in the object!!
-]]--
+
 
 function main()
 
