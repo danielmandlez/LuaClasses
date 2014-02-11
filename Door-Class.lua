@@ -18,13 +18,12 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 
 	local self = {}
 	
-	self.DR_Door = DataRef					-- Pointer to DataRef
+	self.DataRef = DataRef					-- Pointer to DataRef
 	
-	self.lock = false						-- Interlock for set new position
 	self.cmd_pos = initPos or 0.0			-- Initial Position Command
-	self.act_pos = initPos or 0.0			-- Initial Position Actual
+	self.act_pos = 0.0						-- Initial Position Actual
 	
-	dref.setFloat(DR_Door, initPos)			-- Set DataRef to Initial Position
+	dref.setFloat(DataRef, self.act_pos)	-- Set DataRef to Initial Position
 	
 	self.TravelTime = travelTime			-- Time in seconds for Movement from 0.0 to 1.0
 	
@@ -33,10 +32,9 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 	
 	
 	-- Set Position Command
-	self.set_cmdPos = function(pos, lock)	-- FLOAT, BOOL
-		self.lock = lock or false
-		if lock == false then
-			self.cmd_Pos = pos
+	self.set_cmdPos = function(pos, lock)	-- FLOAT, BOOLEAN/INTEGER optional
+		if lock == false or lock == 0 or lock == nil then
+			self.cmd_pos = pos
 		end
 	end
 
@@ -44,9 +42,11 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 	-- ONLY call once per frame!!!
 	-- DataRef for Door animation will be written if position changes only
 	self.move = function(FPS, power)
-		if power == true then						-- check is power avail for door movement
+				
+		if power == true or power == 1 or power == nil then			-- check is power avail for door movement
 			local temp_pos
-			if math.floor(self.cmd_pos*10000) == math.floor(self.act_pos*10000) then
+			--if math.floor(self.cmd_pos*1000) == math.floor(self.act_pos*1000) then
+			if self.cmd_pos == self.act_pos then
 				self.opening = false
 				self.closing = false
 				
@@ -59,7 +59,7 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 				else
 					self.act_pos = temp_pos
 				end
-				dref.setFloat(DR_Door, self.act_pos)-- Set Door Dataref to new Position
+				dref.setFloat(DataRef, self.act_pos)-- Set Door Dataref to new Position
 				
 			elseif self.cmd_pos < self.act_pos then	-- move close
 				temp_pos = self.act_pos - 1/(FPS * self.TravelTime)
@@ -70,7 +70,7 @@ Door.new = function(DataRef, travelTime, initPos)	-- Constructor (STRING, FLOAT,
 				else
 					self.act_pos = temp_pos
 				end
-				dref.setFloat(DR_Door, self.act_pos)-- Set Door Dataref to new Position
+				dref.setFloat(DataRef, self.act_pos)-- Set Door Dataref to new Position
 			end
 		end
 	end
