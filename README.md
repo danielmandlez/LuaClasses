@@ -1,4 +1,5 @@
 LuaClasses
 ==========
 
-some useful Lua-Classes for GIZMO
+some useful Lua-Classes for X-Plane GIZMO
+
